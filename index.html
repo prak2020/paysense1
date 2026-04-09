@@ -10,7 +10,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;font-family:'Inter',system-ui,sans-serif;color:#1a1a1a;}
-.app{display:flex;height:100vh;overflow:hidden;background:linear-gradient(120deg,#e6e6ec 0%,#edeae0 40%,#f5edbe 75%,#f0e49a 100%);}
+.app{display:flex;height:100vh;overflow:hidden;background:linear-gradient(120deg,#e6e6ec 0%,#edeae0 40%,#f5edbe 75%,#f0e49a 100%);zoom:0.9;}
 
 /* ── SIDEBAR ── */
 .sidebar{width:248px;flex-shrink:0;background:linear-gradient(180deg,#fefdf5 0%,#fdf8e4 100%);display:flex;flex-direction:column;padding:0 0 24px;overflow-y:auto;border-right:1px solid rgba(240,192,0,0.22);box-shadow:4px 0 20px rgba(0,0,0,0.06);}
@@ -412,24 +412,84 @@ const PROVIDERS = [
   {id:'midmarket', name:'Mid-Market',          sub:'open.er-api.com / ECB benchmark',   color:'#6366f1', logo:null, isMid:true},
 ];
 
-// FIXED RATES — read from bank/ADII websites on 07-04-2026
+// FIXED RATES — read from bank/ADII websites on 08-04-2026
 // ✦ Estimated | ✧ Verify | Banks: TT Selling | Thomas Cook: Remittance | Orient: Education/Medical
 const FIXED_RATES = {
-  USD:{icici:94.37,hdfc:95.02,axis:94.68,sbi:93.65,bob:93.51,canara:93.44,idfc:94.75,kotak:94.62,yesbank:94.48,unionbank:93.23,thomascook:94.13,orient:93.42},
-  EUR:{icici:109.38,hdfc:109.54,axis:109.50,sbi:108.74,bob:108.34,canara:108.07,idfc:110.48,kotak:109.20,yesbank:109.38,unionbank:107.69,thomascook:108.91,orient:108.14},
-  GBP:{icici:126.03,hdfc:126.34,axis:125.67,sbi:124.56,bob:123.76,canara:124.09,idfc:126.50,kotak:125.27,yesbank:125.42,unionbank:123.44,thomascook:124.75,orient:123.89},
-  AUD:{icici:66.46,hdfc:66.63,axis:65.61,sbi:65.51,bob:65.00,canara:64.94,idfc:66.42,kotak:65.73,yesbank:65.54,unionbank:64.66,thomascook:65.67,orient:64.93},
-  CAD:{icici:68.54,hdfc:68.71,axis:68.23,sbi:67.67,bob:67.50,canara:67.39,idfc:68.91,kotak:68.38,yesbank:68.11,unionbank:67.05,thomascook:67.91,orient:67.23},
+  USD:{icici:94.37,hdfc:94.34,axis:94.28,sbi:93.10,bob:93.04,canara:92.98,idfc:94.30,kotak:94.33,yesbank:94.28,unionbank:93.03,thomascook:93.46,orient:92.98},
+  EUR:{icici:109.38,hdfc:110.59,axis:110.32,sbi:109.44,bob:109.09,canara:108.85,idfc:110.56,kotak:110.19,yesbank:110.51,unionbank:108.80,thomascook:109.38,orient:108.76},
+  GBP:{icici:126.03,hdfc:127.73,axis:126.76,sbi:125.56,bob:124.78,canara:125.10,idfc:126.77,kotak:126.62,yesbank:126.93,unionbank:124.89,thomascook:125.55,orient:124.81},
+  AUD:{icici:66.46,hdfc:67.92,axis:66.59,sbi:66.38,bob:65.97,canara:65.97,idfc:66.86,kotak:66.77,yesbank:66.70,unionbank:65.77,thomascook:66.25,orient:65.70},
+  CAD:{icici:68.54,hdfc:68.92,axis:68.33,sbi:67.71,bob:67.54,canara:67.45,idfc:68.57,kotak:68.60,yesbank:68.40,unionbank:67.34,thomascook:67.71,orient:67.23},
 };
 
-// Flywire markup % by currency and send amount (source: Google Sheet "Copy of FX Rate Comparison – Market vs Flywire", fetched 07-04-2026)
-const FW_SPREAD = {
-  USD:{ 5000:2.22, 10000:2.11, 15000:2.11, 20000:2.01, 25000:2.01 },
-  CAD:{ 5000:2.43, 10000:2.02, 15000:1.91, 20000:1.91, 25000:1.80 },
-  AUD:{ 5000:2.45, 10000:2.03, 15000:1.93, 20000:1.93, 25000:1.76 },
-  GBP:{ 5000:1.90, 10000:2.03, 15000:2.03, 20000:1.88, 25000:1.49 },
-  EUR:{ 5000:2.03, 10000:1.93, 15000:1.93, 20000:1.71, 25000:1.71 },
+// Flywire markup % by currency and send amount.
+// Defaults below are seeded from the Google Sheet (Apr 9, 2026 · 1:40 pm IST snapshot).
+// At page load, fetchFlywireFromSheet() pulls Column E from the published sheet and replaces these.
+const FW_SHEET_CSV = 'https://docs.google.com/spreadsheets/d/1ehsYpjnFQWYTzjoFJgMB9Bh_91UkOJCYhGYqIBZPI_k/export?format=csv&gid=1117643021';
+let FW_SPREAD = {
+  USD:{ 5000:2.03, 10000:1.92, 15000:1.91, 20000:1.83, 25000:1.83 },
+  CAD:{ 5000:2.38, 10000:1.97, 15000:1.87, 20000:1.86, 25000:1.87 },
+  AUD:{ 5000:2.33, 10000:1.93, 15000:1.81, 20000:1.83, 25000:1.81 },
+  GBP:{ 5000:1.93, 10000:1.89, 15000:1.72, 20000:1.67, 25000:1.62 },
+  EUR:{ 5000:2.10, 10000:2.01, 15000:2.01, 20000:1.88, 25000:1.88 },
 };
+let FW_SHEET_META = { updated: 'Apr 9, 2026 · 1:40 pm IST (cached)', source: 'cached' };
+
+// Parse the published CSV and replace FW_SPREAD.
+// Expected columns: A=Currency, B=Amount, C=Mid, D=FlywireRate, E=Markup%
+async function fetchFlywireFromSheet() {
+  try {
+    const res = await fetch(FW_SHEET_CSV, { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const txt = await res.text();
+    const lines = txt.split(/\r?\n/).filter(l => l.length);
+    // Row 0 is header line like: "Checked on ,9th of April ,,as of 1:40 pm,..."
+    // (tolerant to header typos like "Chcecked")
+    if (lines[0] && /ch.{0,3}ck/i.test(lines[0])) {
+      var m = lines[0].match(/,([^,]+),,\s*([^,]+)/);
+      if (m) FW_SHEET_META.updated = (m[1] + ' · ' + m[2]).replace(/\s+/g, ' ').trim();
+    }
+    const out = {};
+    let curCurrent = null;
+    // CSV is simple enough to split by commas but amounts are quoted like "5,000".
+    // Use a lightweight parser that handles quoted fields.
+    function parseLine(line) {
+      const out = []; let cur = ''; let inQ = false;
+      for (let i = 0; i < line.length; i++) {
+        const c = line[i];
+        if (c === '"') { inQ = !inQ; continue; }
+        if (c === ',' && !inQ) { out.push(cur); cur = ''; continue; }
+        cur += c;
+      }
+      out.push(cur);
+      return out;
+    }
+    for (let i = 2; i < lines.length; i++) {
+      const cells = parseLine(lines[i]);
+      const curCell = (cells[0] || '').trim();
+      const amtCell = (cells[1] || '').replace(/,/g, '').trim();
+      const mkCell  = (cells[4] || '').replace('%', '').trim();
+      if (curCell) curCurrent = curCell;
+      if (!curCurrent || !amtCell || !mkCell) continue;
+      const amt = parseInt(amtCell, 10);
+      const mk  = parseFloat(mkCell);
+      if (!isNaN(amt) && !isNaN(mk)) {
+        if (!out[curCurrent]) out[curCurrent] = {};
+        out[curCurrent][amt] = mk;
+      }
+    }
+    // Only overwrite currencies the dashboard actually uses
+    ['USD','CAD','AUD','GBP','EUR'].forEach(c => {
+      if (out[c] && Object.keys(out[c]).length >= 3) FW_SPREAD[c] = out[c];
+    });
+    FW_SHEET_META.source = 'live';
+    return true;
+  } catch (e) {
+    console.warn('Flywire sheet fetch failed:', e.message);
+    FW_SHEET_META.source = 'cached';
+    return false;
+  }
+}
 function getFWSpread(cur, amt) {
   const bands = FW_SPREAD[cur]; if (!bands) return 2.2;
   // find the closest band (pick the band whose key is closest to amt)
@@ -454,6 +514,9 @@ let cAbs, cPct;
 function _s(svg){ return 'data:image/svg+xml,'+encodeURIComponent(svg); }
 
 const LOGO_SVG = {
+  // Flywire — official brand SVG (companieslogo.com)
+  flywire: _s(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1092 1517"><rect width="1092" height="1517" fill="white"/><path fill="#0279d4" fill-rule="evenodd" d="M584.32 521.55L40.23 521.55L62.91 379.84L607 379.84L618.31 311.82C649.49 113.4 779.84 0.05 981.04 0.05L1091.54 0.05L1068.87 138.92L966.86 138.92C856.36 138.92 794.02 192.76 774.17 317.49L765.67 379.84L975.37 379.84L952.69 521.55L742.99 521.55L626.81 1207.45C595.66 1405.87 462.47 1519.23 261.27 1516.42L249.93 1516.42L272.61 1366.18L281.12 1366.18C394.46 1366.18 453.97 1318 473.81 1196.14L547.46 751.13L0.57 751.13L23.22 609.42L570.14 609.42L584.32 521.55Z"/></svg>`),
+
   // Axis Bank — dark maroon A-triangle mark + AXIS BANK text
   axis: _s(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 52">
     <rect width="130" height="52" fill="white"/>
@@ -688,7 +751,7 @@ function renderAll() {
         </div>
         ${(!r.isBank && r.sub)?`<div class="prov-sub">${r.sub}</div>`:''}
       </div></div></td>
-      <td class="r">${isFW?'':` <span class="rate-val" style="color:${r.color}">₹${r.rate.toFixed(2)}</span>`}</td>
+      <td class="r">${isFW?'':`<span class="rate-val" style="color:${r.color}">₹${r.rate.toFixed(2)}</span>`}</td>
       <td class="r">${isFW?'':`<span class="cost-val">₹${Math.round(r.cost).toLocaleString('en-IN')}</span>`}</td>
       <td class="c"><span class="chip ${chipCls(r.sp,isMid)}">${isMid?'Reference':r.sp<0?r.sp.toFixed(2)+'%*':'+'+r.sp.toFixed(2)+'%'}</span></td>`;
     tb.appendChild(tr);
@@ -751,10 +814,10 @@ function initCharts() {
   Chart.defaults.borderColor='#f4f7fe';
   const opts=(yLabel)=>({
     responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.raw+yLabel}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+Number(ctx.raw).toFixed(2)+yLabel}}},
     scales:{
       x:{grid:{display:false},ticks:{font:{size:9},maxRotation:40,minRotation:25}},
-      y:{ticks:{callback:v=>yLabel==='%'?v+'%':'₹'+v},grid:{color:'rgba(240,192,0,0.1)'},beginAtZero:yLabel==='%'}
+      y:{ticks:{precision:2,callback:v=>yLabel==='%'?(Number(v).toFixed(2)+'%'):('₹'+Number(v).toFixed(2))},grid:{color:'rgba(240,192,0,0.1)'},beginAtZero:yLabel==='%'}
     },
     animation:{duration:650}
   });
@@ -807,7 +870,10 @@ try {
 
 try { initCharts(); } catch(e){ console.warn('Charts error:',e); }
 
-fetchRates().catch(e=>console.warn('fetchRates failed:',e));
+// Fetch Flywire markup % from Google Sheet (Column E), then refresh rates + rerender
+fetchFlywireFromSheet().finally(()=>{
+  fetchRates().catch(e=>console.warn('fetchRates failed:',e));
+});
 
 setInterval(()=>{
   countdown--;
