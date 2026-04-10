@@ -1,14 +1,7 @@
 {
-  "updated": "2026-04-10T20:10:57.615Z",
-  "updated_ist": "11/4/2026, 1:40:57 am",
+  "updated": "2026-04-10T21:03:25.107Z",
+  "updated_ist": "11/4/2026, 2:33:25 am",
   "rates": {
-    "icici": {
-      "USD": 94.3,
-      "EUR": 111.1,
-      "GBP": 127.1,
-      "AUD": 25.53,
-      "CAD": 69.23
-    },
     "bob": {
       "USD": 92.99,
       "GBP": 124.97,
@@ -18,20 +11,24 @@
     },
     "thomascook": {
       "USD": 90.8975,
-      "EUR": 106.4388,
-      "GBP": 122.3649,
-      "CAD": 65.4639,
-      "AUD": 63.1883
+      "EUR": 106.5408,
+      "GBP": 122.439,
+      "CAD": 65.4445,
+      "AUD": 63.244
     },
     "orient": {
       "USD": 93.3,
-      "EUR": 109.53,
-      "GBP": 125.7,
-      "CAD": 67.54,
-      "AUD": 66.15
+      "EUR": 109.51,
+      "GBP": 125.67,
+      "CAD": 67.52,
+      "AUD": 66.02
     }
   },
   "errors": [
+    {
+      "id": "icici",
+      "error": "page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://www.icicibank.com/corp"
+    },
     {
       "id": "hdfc",
       "error": "No rates extracted"
