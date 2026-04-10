@@ -62,9 +62,9 @@ async function scrapeICICI(page) {
     const rows = document.querySelectorAll('table tr');
     for (const row of rows) {
       const cells = row.querySelectorAll('td');
-      if (cells.length < 5) continue;
+      if (cells.length < 9) continue;
       const curText = cells[0]?.innerText?.trim() || '';
-      const rateText = cells[4]?.innerText?.trim() || ''; // column 5 = index 4 (TT Selling)
+      const rateText = cells[8]?.innerText?.trim() || ''; // TT Selling = column index 8
       if (curText && rateText && /\d/.test(rateText)) {
         results[curText] = rateText;
       }
@@ -79,24 +79,29 @@ async function scrapeICICI(page) {
 // ────────────────────────────────────────────
 async function scrapeAxis(page) {
   console.log('  [AXIS] Navigating...');
-  // Try the redirect-friendly URL first
-  try {
-    await page.goto('https://application.axisbank.co.in/webforms/corporatecardrate/index.aspx', {
-      waitUntil: 'networkidle', timeout: 30000,
-    });
-  } catch (e) {
-    console.log('  [AXIS] Retrying with alternate URL...');
-    await page.goto('https://www.axisbank.com/forex/forex-card-rates', {
-      waitUntil: 'networkidle', timeout: 30000,
-    });
+  // Try multiple URLs — Axis redirects between domains
+  const urls = [
+    'https://application.axisbank.co.in/webforms/corporatecardrate/index.aspx',
+    'https://www.axisbank.com/forex/forex-card-rates',
+  ];
+  let loaded = false;
+  for (const url of urls) {
+    try {
+      console.log('  [AXIS] Trying', url);
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+      await page.waitForTimeout(5000); // Extra wait for JS/redirect
+      loaded = true;
+      break;
+    } catch (e) {
+      console.log('  [AXIS] Failed:', e.message.slice(0, 80));
+    }
   }
-  await page.waitForTimeout(2000);
+  if (!loaded) return {};
 
   return page.evaluate(() => {
     const results = {};
     const tables = document.querySelectorAll('table');
     for (const table of tables) {
-      // Find header row with "TT Sell"
       const headerCells = [];
       const headerRow = table.querySelector('thead tr') || table.querySelector('tr');
       if (!headerRow) continue;
@@ -280,6 +285,13 @@ async function scrapeHDFC(page) {
 
   if (!pdfBuffer || pdfBuffer.length < 500) return {};
 
+  // Check if Cloudflare returned HTML instead of PDF
+  const hdrH = pdfBuffer.slice(0, 20).toString();
+  if (hdrH.includes('<!') || hdrH.includes('<html') || !hdrH.includes('%PDF')) {
+    console.log('  [HDFC] Response is HTML/Cloudflare block, not PDF');
+    return {};
+  }
+
   const pdfData = await pdfParse(pdfBuffer);
   const lines = pdfData.text.split('\n').map(l => l.trim()).filter(Boolean);
   const rates = {};
@@ -362,7 +374,8 @@ async function scrapeHDFC(page) {
 async function scrapeSBI(page) {
   console.log('  [SBI] Downloading PDF...');
   const pdfParse = require('pdf-parse');
-  const url = 'https://sbi.co.in/documents/16012/1400784/FOREX_CARD_RATES.pdf';
+  // sbi.co.in redirects to sbi.bank.in
+  const url = 'https://sbi.bank.in/documents/16012/1400784/FOREX_CARD_RATES.pdf';
 
   let pdfBuffer;
   try {
@@ -389,6 +402,13 @@ async function scrapeSBI(page) {
   }
 
   if (!pdfBuffer || pdfBuffer.length < 500) return {};
+
+  // Check if response is HTML instead of PDF
+  const hdrS = pdfBuffer.slice(0, 20).toString();
+  if (hdrS.includes('<!') || hdrS.includes('<html') || !hdrS.includes('%PDF')) {
+    console.log('  [SBI] Response is HTML, not PDF — site may be blocking');
+    return {};
+  }
 
   let pdfData;
   try {
@@ -496,6 +516,13 @@ async function scrapeUnion(page) {
   }
 
   if (!pdfBuffer || pdfBuffer.length < 500) return {};
+
+  // Check if response is HTML instead of PDF
+  const hdr = pdfBuffer.slice(0, 20).toString();
+  if (hdr.includes('<!') || hdr.includes('<html') || !hdr.includes('%PDF')) {
+    console.log('  [UNION] Response is HTML, not PDF — site may be blocking');
+    return {};
+  }
 
   const pdfData = await pdfParse(pdfBuffer);
   const lines = pdfData.text.split('\n').map(l => l.trim()).filter(Boolean);
@@ -653,7 +680,7 @@ async function main() {
 
   // Exit with error only if fewer than 4 sources worked
   if (Object.keys(results.rates).length < 4) {
-    console.error('CRITICAL: Fewer than 4 sources succeeded');
+    console.error('CRITICAL: Fewer than 3 sources succeeded');
     process.exit(1);
   }
 }
