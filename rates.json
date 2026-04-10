@@ -1,0 +1,68 @@
+{
+  "updated": "2026-04-10T20:10:57.615Z",
+  "updated_ist": "11/4/2026, 1:40:57 am",
+  "rates": {
+    "icici": {
+      "USD": 94.3,
+      "EUR": 111.1,
+      "GBP": 127.1,
+      "AUD": 25.53,
+      "CAD": 69.23
+    },
+    "bob": {
+      "USD": 92.99,
+      "GBP": 124.97,
+      "EUR": 109.29,
+      "CAD": 67.6,
+      "AUD": 66.09
+    },
+    "thomascook": {
+      "USD": 90.8975,
+      "EUR": 106.4388,
+      "GBP": 122.3649,
+      "CAD": 65.4639,
+      "AUD": 63.1883
+    },
+    "orient": {
+      "USD": 93.3,
+      "EUR": 109.53,
+      "GBP": 125.7,
+      "CAD": 67.54,
+      "AUD": 66.15
+    }
+  },
+  "errors": [
+    {
+      "id": "hdfc",
+      "error": "No rates extracted"
+    },
+    {
+      "id": "axis",
+      "error": "No rates extracted"
+    },
+    {
+      "id": "sbi",
+      "error": "No rates extracted"
+    },
+    {
+      "id": "kotak",
+      "error": "No rates extracted"
+    },
+    {
+      "id": "idfc",
+      "error": "No rates extracted"
+    },
+    {
+      "id": "yesbank",
+      "error": "No rates extracted"
+    },
+    {
+      "id": "canara",
+      "error": "No rates extracted"
+    },
+    {
+      "id": "unionbank",
+      "error": "No rates extracted"
+    }
+  ]
+}
