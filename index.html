@@ -230,7 +230,7 @@ tbody tr.tr-subheader th{padding:7px 14px;font-size:0.63rem;font-weight:700;colo
   <div class="sidebar-footer">
     <div class="live-status">
       <div class="live-dot"></div>
-      <div class="live-text">Mid-market via <strong>open.er-api</strong><br><span id="rate-time" style="font-size:0.58rem">Loading live rates…</span></div>
+      <div class="live-text">Mid-market via <strong>floatrates.com</strong><br><span id="rate-time" style="font-size:0.58rem">Loading live rates…</span></div>
     </div>
   </div>
 </div>
@@ -342,18 +342,12 @@ tbody tr.tr-subheader th{padding:7px 14px;font-size:0.63rem;font-weight:700;colo
         <br><br>
         Beyond the headline exchange rate spread, sending money through Indian banks and ADIIs typically involves a stack of additional charges that quietly inflate your total cost: <strong>SWIFT/wire transfer fees</strong> (₹500–₹1,500 per transaction), <strong>correspondent bank charges</strong> (USD 15–35 deducted at the destination before the university receives funds), and <strong>documentary handling or service fees</strong> levied by the remitting branch. These charges are often disclosed only in the fine print — or discovered after the money has moved. Flywire's all-inclusive, transparent pricing eliminates all of these surprises: no SWIFT deductions at the university end, no correspondent bank skimming, no hidden service charges — the amount you initiate is the amount the university credits, making it the most reliable and student-friendly option for tuition payments globally.
       </div>
-      <div class="fw-stats" id="fw-stats">
-        <div class="fw-stat"><div class="fw-stat-val" id="fw-rate-val">—</div><div class="fw-stat-lbl">Flywire rate (INR/unit)</div></div>
-        <div class="fw-stat"><div class="fw-stat-val" id="fw-cost-val">—</div><div class="fw-stat-lbl">Total INR cost via Flywire</div></div>
-        <div class="fw-stat"><div class="fw-stat-val" id="fw-save-best">—</div><div class="fw-stat-lbl">You save with best alternative</div></div>
-        <div class="fw-stat"><div class="fw-stat-val" id="fw-save-pct">—</div><div class="fw-stat-lbl">% difference vs best rate</div></div>
-      </div>
     </div>
 
     <!-- Editor -->
     <div class="editor-card">
       <div class="editor-ttl">✏️ Update Provider Quotes</div>
-      <div class="editor-hint">Paste the latest INR rate from each provider's website. Mid-market rate auto-fetches from open.er-api.com / ECB. Bank TT rates are published daily at 9:30 AM IST.</div>
+      <div class="editor-hint">Paste the latest INR rate from each provider's website. Mid-market rate auto-fetches from floatrates.com (updates multiple times per day). Bank TT rates are published daily at 9:30 AM IST.</div>
       <div class="editor-tabs">
         <button class="etab active" onclick="switchEditorTab('banks',this)">🏦 Indian Banks</button>
         <button class="etab" onclick="switchEditorTab('adii',this)">💱 ADIIs &amp; Benchmark</button>
@@ -409,7 +403,7 @@ const PROVIDERS = [
   {id:'thomascook',name:'Thomas Cook',         sub:'ADII · Remittance column',           color:'#0066CC', logo:'thomascook.in',            link:'https://www.thomascook.in/foreign-exchange/forex-rate-card', isADII:true},
   {id:'orient',    name:'Orient Exchange',     sub:'ADII · Education/Medical column',    color:'#CC0000', logo:'orientexchange.in',        link:'https://www.orientexchange.in/moneychangelist', isADII:true},
   // ── Reference ──
-  {id:'midmarket', name:'Mid-Market',          sub:'open.er-api.com / ECB benchmark',   color:'#6366f1', logo:null, isMid:true},
+  {id:'midmarket', name:'Mid-Market',          sub:'floatrates.com · hourly updates',   color:'#6366f1', logo:null, isMid:true},
 ];
 
 // FIXED RATES — read from bank/ADII websites on 08-04-2026
@@ -594,16 +588,33 @@ function buildDefaults() {
 async function fetchRates() {
   const curs = ['USD','CAD','GBP','EUR','AUD'];
   let ok = false;
+  let srcTs = null;
   try {
-    const rs = await Promise.all(curs.map(c=>fetch(`https://open.er-api.com/v6/latest/${c}`).then(r=>r.json()).catch(()=>null)));
-    rs.forEach((d,i)=>{ if(d&&d.rates&&d.rates.INR){midRates[curs[i]]=parseFloat(d.rates.INR.toFixed(4));ok=true;} });
-    if (ok) document.getElementById('rate-time').textContent='Google/ECB · '+new Date().toLocaleTimeString();
+    const rs = await Promise.all(curs.map(c=>fetch(`https://www.floatrates.com/daily/${c.toLowerCase()}.json`,{cache:'no-store'}).then(r=>r.json()).catch(()=>null)));
+    rs.forEach((d,i)=>{
+      if(d && d.inr && d.inr.rate){
+        midRates[curs[i]] = parseFloat(d.inr.rate.toFixed(4));
+        if(d.inr.date && !srcTs) srcTs = d.inr.date;
+        ok = true;
+      }
+    });
+    if (ok) {
+      const src = srcTs ? new Date(srcTs).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : new Date().toLocaleTimeString();
+      document.getElementById('rate-time').textContent = 'floatrates.com · src ' + src;
+    }
   } catch(_){}
   if (!ok) {
     try {
       const rs = await Promise.all(curs.map(c=>fetch(`https://api.frankfurter.app/latest?from=${c}&to=INR`).then(r=>r.json()).catch(()=>null)));
       rs.forEach((d,i)=>{ if(d&&d.rates&&d.rates.INR){midRates[curs[i]]=parseFloat(d.rates.INR.toFixed(4));ok=true;} });
       if (ok) document.getElementById('rate-time').textContent='ECB fallback · '+new Date().toLocaleTimeString();
+    } catch(_){}
+  }
+  if (!ok) {
+    try {
+      const rs = await Promise.all(curs.map(c=>fetch(`https://open.er-api.com/v6/latest/${c}`).then(r=>r.json()).catch(()=>null)));
+      rs.forEach((d,i)=>{ if(d&&d.rates&&d.rates.INR){midRates[curs[i]]=parseFloat(d.rates.INR.toFixed(4));ok=true;} });
+      if (ok) document.getElementById('rate-time').textContent='er-api fallback · '+new Date().toLocaleTimeString();
     } catch(_){}
   }
   if (!ok) document.getElementById('rate-time').textContent='Offline estimates (Apr 2026)';
@@ -715,11 +726,6 @@ function renderAll() {
     document.getElementById('kpi-spread-med-fill').style.width  = Math.min(100,medianSp/maxSp*100)+'%';
   },80);
 
-  // Flywire callout stats
-  document.getElementById('fw-rate-val').textContent  = '₹'+fwRate.toFixed(2);
-  document.getElementById('fw-cost-val').textContent  = '₹'+Math.round(fwCost).toLocaleString('en-IN');
-  document.getElementById('fw-save-best').textContent = savingVsFW>0?'₹'+Math.round(savingVsFW).toLocaleString('en-IN'):'₹0';
-  document.getElementById('fw-save-pct').textContent  = savingVsFW>0?((savingVsFW/fwCost)*100).toFixed(2)+'%':'0%';
 
   // ── TABLE ──
   const tb = document.getElementById('cmp-tbody'); tb.innerHTML='';
