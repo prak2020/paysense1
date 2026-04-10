@@ -1,0 +1,40 @@
+name: Scrape FX Rates
+
+on:
+  schedule:
+    - cron: '0 3,6,9,12,15 * * *'
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npx playwright install chromium --with-deps
+
+      - name: Run scraper
+        run: npm run scrape
+
+      - name: Commit rates.json
+        run: |
+          git config user.name "Paysense Bot"
+          git config user.email "bot@paysense.app"
+          git add rates.json
+          if git diff --cached --quiet; then
+            echo "No changes to rates.json, skipping commit"
+          else
+            git commit -m "Update rates — $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push
+          fi
