@@ -406,14 +406,14 @@ const PROVIDERS = [
   {id:'midmarket', name:'Mid-Market',          sub:'floatrates.com · hourly updates',   color:'#6366f1', logo:null, isMid:true},
 ];
 
-// FIXED RATES — read from bank/ADII websites on 08-04-2026
+// FIXED RATES — read from bank/ADII websites on 10-04-2026
 // ✦ Estimated | ✧ Verify | Banks: TT Selling | Thomas Cook: Remittance | Orient: Education/Medical
 const FIXED_RATES = {
-  USD:{icici:94.37,hdfc:94.34,axis:94.28,sbi:93.10,bob:93.04,canara:92.98,idfc:94.30,kotak:94.33,yesbank:94.28,unionbank:93.03,thomascook:93.46,orient:92.98},
-  EUR:{icici:109.38,hdfc:110.59,axis:110.32,sbi:109.44,bob:109.09,canara:108.85,idfc:110.56,kotak:110.19,yesbank:110.51,unionbank:108.80,thomascook:109.38,orient:108.76},
-  GBP:{icici:126.03,hdfc:127.73,axis:126.76,sbi:125.56,bob:124.78,canara:125.10,idfc:126.77,kotak:126.62,yesbank:126.93,unionbank:124.89,thomascook:125.55,orient:124.81},
-  AUD:{icici:66.46,hdfc:67.92,axis:66.59,sbi:66.38,bob:65.97,canara:65.97,idfc:66.86,kotak:66.77,yesbank:66.70,unionbank:65.77,thomascook:66.25,orient:65.70},
-  CAD:{icici:68.54,hdfc:68.92,axis:68.33,sbi:67.71,bob:67.54,canara:67.45,idfc:68.57,kotak:68.60,yesbank:68.40,unionbank:67.34,thomascook:67.71,orient:67.23},
+  USD:{icici:94.30,hdfc:94.24,axis:94.13,sbi:93.25,bob:92.99,canara:92.81,idfc:94.30,kotak:94.33,yesbank:94.28,unionbank:93.03,thomascook:93.58,orient:93.12},
+  EUR:{icici:111.10,hdfc:110.61,axis:110.37,sbi:109.83,bob:109.29,canara:108.82,idfc:110.56,kotak:110.44,yesbank:110.58,unionbank:108.80,thomascook:109.34,orient:108.91},
+  GBP:{icici:127.10,hdfc:127.71,axis:126.82,sbi:125.93,bob:124.97,canara:125.08,idfc:126.77,kotak:126.81,yesbank:126.96,unionbank:124.89,thomascook:125.57,orient:125.01},
+  AUD:{icici:67.65,hdfc:67.85,axis:66.69,sbi:66.73,bob:66.09,canara:65.97,idfc:66.86,kotak:67.02,yesbank:66.86,unionbank:65.77,thomascook:66.19,orient:65.85},
+  CAD:{icici:69.23,hdfc:68.92,axis:68.31,sbi:67.93,bob:67.60,canara:67.39,idfc:68.57,kotak:68.71,yesbank:68.40,unionbank:67.34,thomascook:67.78,orient:67.39},
 };
 
 // Flywire markup % by currency and send amount.
@@ -893,55 +893,45 @@ setInterval(()=>{
 // server-side (no CORS, no blocked domains).
 // When opened as a local HTML file, this block is skipped.
 // ─────────────────────────────────────────────
-(function tryGASBankRates(){
-  if (typeof google === 'undefined' || !google.script) return; // not in GAS
+// FETCH SCRAPED BANK/ADII RATES from rates.json (committed by GitHub Actions every 3 hrs)
+// ─────────────────────────────────────────────
+(async function fetchScrapedRates(){
+  try {
+    const res = await fetch('rates.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const r = data.rates || {};
+    const ts = data.updated_ist || data.updated || '';
 
-  const badge = document.getElementById('countdown-badge');
-  if (badge) badge.textContent = 'Fetching bank rates…';
+    const CURRENCIES_LIST = ['USD','CAD','GBP','EUR','AUD'];
+    const ALL_IDS = ['icici','hdfc','axis','sbi','bob','canara','yesbank','unionbank','idfc','kotak','thomascook','orient'];
 
-  google.script.run
-    .withSuccessHandler(function(json){
-      try {
-        const data = JSON.parse(json);
-        const r = data.rates || {};
-        const ts = data.fetchedAt || '';
-
-        // Inject live TT Sell rates into provRates for every currency
-        const CURRENCIES_LIST = ['USD','CAD','GBP','EUR','AUD'];
-        const BANK_IDS = ['icici','hdfc','axis','sbi','bob','canara','yesbank','unionbank','idfc','kotak'];
-
-        CURRENCIES_LIST.forEach(cur => {
-          if (!provRates[cur]) provRates[cur] = {};
-          BANK_IDS.forEach(bank => {
-            if (r[bank] && r[bank][cur]) {
-              provRates[cur][bank] = r[bank][cur];
-            }
-          });
-        });
-
-        // Update the rate-time indicator
-        const el = document.getElementById('rate-time');
-        if (el) el.textContent = 'Bank TT rates: ' + ts;
-
-        // Re-render with live bank data
-        buildInputs();
-        renderAll();
-
-        // Log which banks returned data and any errors
-        if (data.errors && data.errors.length) {
-          console.warn('Paysense: Some bank fetches failed:', data.errors.join(' | '));
+    let injected = 0;
+    CURRENCIES_LIST.forEach(cur => {
+      if (!provRates[cur]) provRates[cur] = {};
+      ALL_IDS.forEach(bank => {
+        if (r[bank] && r[bank][cur]) {
+          provRates[cur][bank] = r[bank][cur];
+          // Also update FIXED_RATES so editor inputs show scraped values
+          if (FIXED_RATES[cur]) FIXED_RATES[cur][bank] = r[bank][cur];
+          injected++;
         }
-        Object.keys(data.source || {}).forEach(b =>
-          console.info('Paysense: ' + b.toUpperCase() + ' → ' + data.source[b])
-        );
-      } catch(e) {
-        console.error('Paysense: Failed to parse bank rates', e);
-      }
-    })
-    .withFailureHandler(function(err){
-      console.error('Paysense: GAS getBankRates() failed:', err);
-    })
-    .getBankRates();
+      });
+    });
+
+    if (injected > 0) {
+      console.info('Paysense: Loaded ' + injected + ' scraped rates from rates.json (' + ts + ')');
+      buildInputs();
+      renderAll();
+    }
+
+    // Log errors from scraper
+    if (data.errors && data.errors.length) {
+      console.warn('Paysense: Scraper errors:', data.errors.map(e => e.id + ': ' + e.error).join(' | '));
+    }
+  } catch(e) {
+    console.info('Paysense: rates.json not available, using FIXED_RATES fallback (' + e.message + ')');
+  }
 })();
 </script>
 </body>
