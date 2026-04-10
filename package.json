@@ -1,0 +1,12 @@
+{
+  "name": "paysense-scraper",
+  "version": "1.0.0",
+  "description": "Scrapes TT selling rates from 12 Indian banks and ADIIs",
+  "scripts": {
+    "scrape": "node scraper/scrape-rates.js"
+  },
+  "dependencies": {
+    "playwright": "^1.42.0",
+    "pdf-parse": "^1.1.1"
+  }
+}
