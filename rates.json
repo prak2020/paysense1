@@ -1,6 +1,6 @@
 {
-  "updated": "2026-04-11T09:49:39.705Z",
-  "updated_ist": "11/4/2026, 3:19:39 pm",
+  "updated": "2026-04-11T10:00:19.800Z",
+  "updated_ist": "11/4/2026, 3:30:19 pm",
   "rates": {
     "icici": {
       "USD": 94.3,
@@ -8,6 +8,13 @@
       "GBP": 127.1,
       "AUD": 25.53,
       "CAD": 69.23
+    },
+    "axis": {
+      "AUD": 66.69,
+      "CAD": 68.31,
+      "EUR": 110.37,
+      "GBP": 126.82,
+      "USD": 94.13
     },
     "bob": {
       "USD": 92.99,
@@ -41,10 +48,6 @@
   "errors": [
     {
       "id": "hdfc",
-      "error": "No rates extracted"
-    },
-    {
-      "id": "axis",
       "error": "No rates extracted"
     },
     {
