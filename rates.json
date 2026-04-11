@@ -1,6 +1,6 @@
 {
-  "updated": "2026-04-11T10:18:06.170Z",
-  "updated_ist": "11/4/2026, 3:48:06 pm",
+  "updated": "2026-04-11T10:33:20.438Z",
+  "updated_ist": "11/4/2026, 4:03:20 pm",
   "rates": {
     "icici": {
       "USD": 94.3,
@@ -29,6 +29,13 @@
       "GBP": 126.81,
       "AUD": 67.02,
       "EUR": 110.44
+    },
+    "idfc": {
+      "USD": 94.41,
+      "EUR": 111.74,
+      "GBP": 128,
+      "AUD": 67.59,
+      "CAD": 69.09
     },
     "canara": {
       "USD": 92.81,
@@ -59,10 +66,6 @@
     },
     {
       "id": "sbi",
-      "error": "No rates extracted"
-    },
-    {
-      "id": "idfc",
       "error": "No rates extracted"
     },
     {
