@@ -1,6 +1,6 @@
 {
-  "updated": "2026-04-11T10:00:19.800Z",
-  "updated_ist": "11/4/2026, 3:30:19 pm",
+  "updated": "2026-04-11T10:18:06.170Z",
+  "updated_ist": "11/4/2026, 3:48:06 pm",
   "rates": {
     "icici": {
       "USD": 94.3,
@@ -22,6 +22,13 @@
       "EUR": 109.29,
       "CAD": 67.6,
       "AUD": 66.09
+    },
+    "kotak": {
+      "USD": 94.33,
+      "CAD": 68.71,
+      "GBP": 126.81,
+      "AUD": 67.02,
+      "EUR": 110.44
     },
     "canara": {
       "USD": 92.81,
@@ -52,10 +59,6 @@
     },
     {
       "id": "sbi",
-      "error": "No rates extracted"
-    },
-    {
-      "id": "kotak",
       "error": "No rates extracted"
     },
     {
