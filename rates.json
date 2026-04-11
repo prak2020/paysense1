@@ -1,6 +1,6 @@
 {
-  "updated": "2026-04-11T08:41:19.279Z",
-  "updated_ist": "11/4/2026, 2:11:19 pm",
+  "updated": "2026-04-11T08:51:53.850Z",
+  "updated_ist": "11/4/2026, 2:21:53 pm",
   "rates": {
     "icici": {
       "USD": 94.3,
@@ -15,6 +15,13 @@
       "EUR": 109.29,
       "CAD": 67.6,
       "AUD": 66.09
+    },
+    "canara": {
+      "USD": 92.81,
+      "GBP": 125.08,
+      "EUR": 108.82,
+      "CAD": 67.3925,
+      "AUD": 65.965
     },
     "thomascook": {
       "USD": 90.8975,
@@ -54,10 +61,6 @@
     },
     {
       "id": "yesbank",
-      "error": "No rates extracted"
-    },
-    {
-      "id": "canara",
       "error": "No rates extracted"
     },
     {
