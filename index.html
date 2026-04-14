@@ -230,7 +230,7 @@ tbody tr.tr-subheader th{padding:7px 14px;font-size:0.63rem;font-weight:700;colo
   <div class="sidebar-footer">
     <div class="live-status">
       <div class="live-dot"></div>
-      <div class="live-text">Mid-market via <strong>floatrates.com</strong><br><span id="rate-time" style="font-size:0.58rem">Loading live rates…</span></div>
+      <div class="live-text">Mid-market via <strong>Google Sheets</strong><br><span id="rate-time" style="font-size:0.58rem">Loading live rates…</span></div>
     </div>
   </div>
 </div>
@@ -347,7 +347,7 @@ tbody tr.tr-subheader th{padding:7px 14px;font-size:0.63rem;font-weight:700;colo
     <!-- Editor -->
     <div class="editor-card">
       <div class="editor-ttl">✏️ Update Provider Quotes</div>
-      <div class="editor-hint">Paste the latest INR rate from each provider's website. Mid-market rate auto-fetches from floatrates.com (updates multiple times per day). Bank TT rates are published daily at 9:30 AM IST.</div>
+      <div class="editor-hint">Paste the latest INR rate from each provider's website. Mid-market rate auto-fetches from Google Sheets via GOOGLEFINANCE (updates hourly). Bank TT rates are published daily at 9:30 AM IST.</div>
       <div class="editor-tabs">
         <button class="etab active" onclick="switchEditorTab('banks',this)">🏦 Indian Banks</button>
         <button class="etab" onclick="switchEditorTab('adii',this)">💱 ADIIs &amp; Benchmark</button>
@@ -393,7 +393,6 @@ const PROVIDERS = [
   {id:'axis',      name:'Axis Bank',           sub:'TT Selling · outward remittance',    color:'#97144D', logo:'axisbank.com',             link:'https://application.axisbank.co.in/webforms/corporatecardrate/index.aspx', isBank:true, subtype:'pvt'},
   {id:'kotak',     name:'Kotak Mahindra',      sub:'TT Selling · outward remittance',    color:'#EE3124', logo:'kotak.com',                link:'https://www.kotak.com/en/personal-banking/forex/foreign-exchange-rates.html', isBank:true, subtype:'pvt'},
   {id:'idfc',      name:'IDFC First Bank',     sub:'TT Selling · outward remittance',    color:'#1565C0', logo:'idfcfirstbank.com',        link:'https://www.idfcfirstbank.com/personal-banking/forex/forex-rates', isBank:true, subtype:'pvt'},
-  {id:'yesbank',   name:'Yes Bank',            sub:'TT Selling · outward remittance',    color:'#003087', logo:'yesbank.in',               link:'https://www.yesbank.in/sites/yesbank/pdf?name=forexcardratesenglish_pdf.pdf', isBank:true, subtype:'pvt'},
   // ── Public Sector Banks ──
   {id:'sbi',       name:'State Bank of India', sub:'TT Selling · outward remittance',    color:'#1F4E9E', logo:'sbi.co.in',                link:'https://sbi.co.in/documents/16012/1400784/FOREX_CARD_RATES.pdf', isBank:true, subtype:'psu'},
   {id:'bob',       name:'Bank of Baroda',      sub:'TT Selling · outward remittance',    color:'#F58220', logo:'bankofbaroda.in',          link:'https://bankofbaroda.in', isBank:true, subtype:'psu'},
@@ -403,17 +402,17 @@ const PROVIDERS = [
   {id:'thomascook',name:'Thomas Cook',         sub:'ADII · Remittance column',           color:'#0066CC', logo:'thomascook.in',            link:'https://www.thomascook.in/foreign-exchange/forex-rate-card', isADII:true},
   {id:'orient',    name:'Orient Exchange',     sub:'ADII · Education/Medical column',    color:'#CC0000', logo:'orientexchange.in',        link:'https://www.orientexchange.in/moneychangelist', isADII:true},
   // ── Reference ──
-  {id:'midmarket', name:'Mid-Market',          sub:'floatrates.com · hourly updates',   color:'#6366f1', logo:null, isMid:true},
+  {id:'midmarket', name:'Mid-Market',          sub:'Google Sheets · GOOGLEFINANCE',     color:'#6366f1', logo:null, isMid:true},
 ];
 
 // FIXED RATES — read from bank/ADII websites on 10-04-2026
 // ✦ Estimated | ✧ Verify | Banks: TT Selling | Thomas Cook: Remittance | Orient: Education/Medical
 const FIXED_RATES = {
-  USD:{icici:94.30,hdfc:94.24,axis:94.13,sbi:93.25,bob:92.99,canara:92.81,idfc:94.30,kotak:94.33,yesbank:94.28,unionbank:93.03,thomascook:93.58,orient:93.12},
-  EUR:{icici:111.10,hdfc:110.61,axis:110.37,sbi:109.83,bob:109.29,canara:108.82,idfc:110.56,kotak:110.44,yesbank:110.58,unionbank:108.80,thomascook:109.34,orient:108.91},
-  GBP:{icici:127.10,hdfc:127.71,axis:126.82,sbi:125.93,bob:124.97,canara:125.08,idfc:126.77,kotak:126.81,yesbank:126.96,unionbank:124.89,thomascook:125.57,orient:125.01},
-  AUD:{icici:67.65,hdfc:67.85,axis:66.69,sbi:66.73,bob:66.09,canara:65.97,idfc:66.86,kotak:67.02,yesbank:66.86,unionbank:65.77,thomascook:66.19,orient:65.85},
-  CAD:{icici:69.23,hdfc:68.92,axis:68.31,sbi:67.93,bob:67.60,canara:67.39,idfc:68.57,kotak:68.71,yesbank:68.40,unionbank:67.34,thomascook:67.78,orient:67.39},
+  USD:{icici:94.30,hdfc:94.24,axis:94.13,sbi:93.25,bob:92.99,canara:92.81,idfc:94.30,kotak:94.33,unionbank:93.03,thomascook:93.58,orient:93.12},
+  EUR:{icici:111.10,hdfc:110.61,axis:110.37,sbi:109.83,bob:109.29,canara:108.82,idfc:110.56,kotak:110.44,unionbank:108.80,thomascook:109.34,orient:108.91},
+  GBP:{icici:127.10,hdfc:127.71,axis:126.82,sbi:125.93,bob:124.97,canara:125.08,idfc:126.77,kotak:126.81,unionbank:124.89,thomascook:125.57,orient:125.01},
+  AUD:{icici:67.65,hdfc:67.85,axis:66.69,sbi:66.73,bob:66.09,canara:65.97,idfc:66.86,kotak:67.02,unionbank:65.77,thomascook:66.19,orient:65.85},
+  CAD:{icici:69.23,hdfc:68.92,axis:68.31,sbi:67.93,bob:67.60,canara:67.39,idfc:68.57,kotak:68.71,unionbank:67.34,thomascook:67.78,orient:67.39},
 };
 
 // Flywire markup % by currency and send amount.
@@ -521,12 +520,6 @@ const LOGO_SVG = {
     <text x="63" y="41" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#8C1314" letter-spacing="3">BANK</text>
   </svg>`),
 
-  // Yes Bank — bold red swoosh / checkmark mark (brand signature)
-  yesbank: _s(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 60">
-    <rect width="70" height="60" fill="white"/>
-    <path d="M7,36 C13,36 18,28 25,44 C31,56 42,34 62,10" stroke="#E5003B" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>`),
-
   // Canara Bank — circular navy field with two interlocked arcs + red vertical accent
   canara: _s(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
     <circle cx="26" cy="26" r="25" fill="#0A3575"/>
@@ -583,26 +576,27 @@ function buildDefaults() {
 }
 
 // ─────────────────────────────────────────────
-// FETCH MID-MARKET — same dual-source as PriceSense
+// FETCH MID-MARKET — Google Sheets primary, API fallbacks
 // ─────────────────────────────────────────────
 async function fetchRates() {
   const curs = ['USD','CAD','GBP','EUR','AUD'];
   let ok = false;
-  let srcTs = null;
+
+  // ── Primary: rates.json (scraper fetches from Google Sheets hourly, no CORS issues) ──
   try {
-    const rs = await Promise.all(curs.map(c=>fetch(`https://www.floatrates.com/daily/${c.toLowerCase()}.json`,{cache:'no-store'}).then(r=>r.json()).catch(()=>null)));
-    rs.forEach((d,i)=>{
-      if(d && d.inr && d.inr.rate){
-        midRates[curs[i]] = parseFloat(d.inr.rate.toFixed(4));
-        if(d.inr.date && !srcTs) srcTs = d.inr.date;
-        ok = true;
+    const res = await fetch(`rates.json?_=${Date.now()}`, {cache:'no-store'});
+    if (res.ok) {
+      const data = await res.json();
+      if (data.midmarket) {
+        curs.forEach(c => {
+          if (data.midmarket[c]) { midRates[c] = data.midmarket[c]; ok = true; }
+        });
+        if (ok) document.getElementById('rate-time').textContent = 'Google Sheets · ' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
       }
-    });
-    if (ok) {
-      const src = srcTs ? new Date(srcTs).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : new Date().toLocaleTimeString();
-      document.getElementById('rate-time').textContent = 'floatrates.com · src ' + src;
     }
   } catch(_){}
+
+  // ── Fallback 1: Frankfurter (ECB) ──
   if (!ok) {
     try {
       const rs = await Promise.all(curs.map(c=>fetch(`https://api.frankfurter.app/latest?from=${c}&to=INR`).then(r=>r.json()).catch(()=>null)));
@@ -610,6 +604,8 @@ async function fetchRates() {
       if (ok) document.getElementById('rate-time').textContent='ECB fallback · '+new Date().toLocaleTimeString();
     } catch(_){}
   }
+
+  // ── Fallback 2: er-api ──
   if (!ok) {
     try {
       const rs = await Promise.all(curs.map(c=>fetch(`https://open.er-api.com/v6/latest/${c}`).then(r=>r.json()).catch(()=>null)));
@@ -617,6 +613,7 @@ async function fetchRates() {
       if (ok) document.getElementById('rate-time').textContent='er-api fallback · '+new Date().toLocaleTimeString();
     } catch(_){}
   }
+
   if (!ok) document.getElementById('rate-time').textContent='Offline estimates (Apr 2026)';
   for (const c of curs) {
     const el = document.getElementById('sr-'+c);
@@ -904,7 +901,7 @@ setInterval(()=>{
     const ts = data.updated_ist || data.updated || '';
 
     const CURRENCIES_LIST = ['USD','CAD','GBP','EUR','AUD'];
-    const ALL_IDS = ['icici','hdfc','axis','sbi','bob','canara','yesbank','unionbank','idfc','kotak','thomascook','orient'];
+    const ALL_IDS = ['icici','hdfc','axis','sbi','bob','canara','unionbank','idfc','kotak','thomascook','orient'];
 
     let injected = 0;
     CURRENCIES_LIST.forEach(cur => {
