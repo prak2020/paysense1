@@ -1,6 +1,6 @@
 {
-  "updated": "2026-04-15T12:03:03.071Z",
-  "updated_ist": "15/4/2026, 5:33:03 pm",
+  "updated": "2026-04-15T13:55:04.036Z",
+  "updated_ist": "15/4/2026, 7:25:04 pm",
   "rates": {
     "icici": {
       "USD": 95.09,
@@ -27,15 +27,7 @@
       "USD": 93.8,
       "AUD": 67.8,
       "CAD": 68.6,
-      "EUR": 111.4,
-      "GBP": 128.07
-    },
-    "bob": {
-      "USD": 93.82,
-      "GBP": 127.42,
-      "EUR": 111.14,
-      "CAD": 68.48,
-      "AUD": 67.33
+      "GBP": 28.07
     },
     "kotak": {
       "USD": 94.87,
@@ -67,25 +59,30 @@
     },
     "thomascook": {
       "USD": 94.5025,
-      "EUR": 111.3403,
-      "GBP": 127.9911,
-      "CAD": 68.8208,
-      "AUD": 67.8012
+      "EUR": 111.5191,
+      "GBP": 128.1605,
+      "CAD": 68.9002,
+      "AUD": 67.886
     },
     "orient": {
       "USD": 93.81,
-      "EUR": 110.62,
-      "GBP": 127.17,
-      "CAD": 68.19,
-      "AUD": 67.08
+      "EUR": 110.67,
+      "GBP": 127.2,
+      "CAD": 68.26,
+      "AUD": 67.12
     }
   },
-  "errors": [],
+  "errors": [
+    {
+      "id": "bob",
+      "error": "page.goto: net::ERR_CONNECTION_RESET at https://www.bankofbaroda.in/business-banking/treasury/forex-"
+    }
+  ],
   "midmarket": {
-    "USD": 93.414,
-    "CAD": 67.784,
-    "GBP": 126.615,
-    "EUR": 110.082,
-    "AUD": 66.713
+    "USD": 93.407,
+    "CAD": 67.85,
+    "GBP": 126.626,
+    "EUR": 110.088,
+    "AUD": 66.708
   }
 }
