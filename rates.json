@@ -1,6 +1,6 @@
 {
-  "updated": "2026-04-15T11:20:10.932Z",
-  "updated_ist": "15/4/2026, 4:50:10 pm",
+  "updated": "2026-04-15T11:29:43.592Z",
+  "updated_ist": "15/4/2026, 4:59:43 pm",
   "rates": {
     "icici": {
       "USD": 95.09,
@@ -28,6 +28,13 @@
       "AUD": 67.8,
       "CAD": 68.6,
       "GBP": 28.07
+    },
+    "bob": {
+      "USD": 93.82,
+      "GBP": 127.42,
+      "EUR": 111.14,
+      "CAD": 68.48,
+      "AUD": 67.33
     },
     "kotak": {
       "USD": 94.87,
@@ -67,22 +74,17 @@
     "orient": {
       "USD": 93.8,
       "EUR": 110.57,
-      "GBP": 127.13,
-      "CAD": 68.15,
+      "GBP": 127.1,
+      "CAD": 68.14,
       "AUD": 67.05
     }
   },
-  "errors": [
-    {
-      "id": "bob",
-      "error": "page.goto: Timeout 45000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://www.bankofbaroda.in/bu"
-    }
-  ],
+  "errors": [],
   "midmarket": {
-    "USD": 93.428,
-    "CAD": 67.79,
-    "GBP": 126.561,
-    "EUR": 110.045,
-    "AUD": 66.687
+    "USD": 93.449,
+    "CAD": 67.786,
+    "GBP": 126.564,
+    "EUR": 110.054,
+    "AUD": 66.688
   }
 }
