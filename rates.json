@@ -1,6 +1,6 @@
 {
-  "updated": "2026-04-17T13:24:37.529Z",
-  "updated_ist": "17/4/2026, 6:54:37 pm",
+  "updated": "2026-04-17T19:01:59.920Z",
+  "updated_ist": "18/4/2026, 12:31:59 am",
   "rates": {
     "icici": {
       "USD": 94.73,
@@ -29,6 +29,13 @@
       "CAD": 68.65,
       "EUR": 110.77,
       "GBP": 127.02
+    },
+    "bob": {
+      "USD": 93.27,
+      "GBP": 126.25,
+      "EUR": 110.44,
+      "CAD": 68.45,
+      "AUD": 67.19
     },
     "kotak": {
       "USD": 94.55,
@@ -59,31 +66,26 @@
       "USD": 93.23
     },
     "thomascook": {
-      "USD": 93.8095,
-      "EUR": 111.1349,
-      "GBP": 127.4718,
-      "CAD": 68.8536,
-      "AUD": 67.8579
+      "USD": 94.0514,
+      "EUR": 111.0244,
+      "GBP": 127.4456,
+      "CAD": 69.0405,
+      "AUD": 67.9759
     },
     "orient": {
       "USD": 93.29,
-      "EUR": 110.54,
-      "GBP": 126.72,
-      "CAD": 68.38,
-      "AUD": 67.41
+      "EUR": 109.98,
+      "GBP": 126.29,
+      "CAD": 68.3,
+      "AUD": 67.02
     }
   },
-  "errors": [
-    {
-      "id": "bob",
-      "error": "page.goto: Timeout 45000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://www.bankofbaroda.in/bu"
-    }
-  ],
+  "errors": [],
   "midmarket": {
-    "USD": 92.625,
-    "CAD": 67.81,
-    "GBP": 125.793,
-    "EUR": 109.667,
-    "AUD": 66.811
+    "USD": 92.578,
+    "CAD": 67.678,
+    "GBP": 125.298,
+    "EUR": 109.042,
+    "AUD": 66.4
   }
 }
