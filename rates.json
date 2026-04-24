@@ -1,6 +1,6 @@
 {
-  "updated": "2026-04-24T08:22:55.578Z",
-  "updated_ist": "24/4/2026, 1:52:55 pm",
+  "updated": "2026-04-24T08:30:48.163Z",
+  "updated_ist": "24/4/2026, 2:00:48 pm",
   "rates": {
     "icici": {
       "USD": 96.15,
@@ -71,21 +71,19 @@
       "GBP": 128.2296,
       "CAD": 69.6245,
       "AUD": 68.0274
-    },
-    "orient": {
-      "USD": 94.65,
-      "EUR": 110.77,
-      "GBP": 127.63,
-      "CAD": 69.23,
-      "AUD": 67.62
     }
   },
-  "errors": [],
+  "errors": [
+    {
+      "id": "orient",
+      "error": "page.goto: net::ERR_NETWORK_IO_SUSPENDED at https://www.orientexchange.in/\nCall log:\n\u001b[2m  - navigat"
+    }
+  ],
   "midmarket": {
-    "USD": 94.281,
-    "CAD": 68.869,
-    "GBP": 127.124,
-    "EUR": 110.26,
-    "AUD": 67.285
+    "USD": 94.299,
+    "CAD": 68.876,
+    "GBP": 127.098,
+    "EUR": 110.252,
+    "AUD": 67.249
   }
 }
