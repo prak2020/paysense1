@@ -1,14 +1,7 @@
 {
-  "updated": "2026-04-24T08:30:48.163Z",
-  "updated_ist": "24/4/2026, 2:00:48 pm",
+  "updated": "2026-04-26T11:16:09.128Z",
+  "updated_ist": "26/4/2026, 4:46:09 pm",
   "rates": {
-    "icici": {
-      "USD": 96.15,
-      "EUR": 113.08,
-      "GBP": 129.88,
-      "AUD": 69.43,
-      "CAD": 71.15
-    },
     "hdfc": {
       "AUD": 69.51,
       "CAD": 70.71,
@@ -39,17 +32,17 @@
     },
     "kotak": {
       "USD": 95.89,
-      "CAD": 70.41,
-      "GBP": 129.25,
-      "AUD": 68.59,
-      "EUR": 112.1
+      "CAD": 70.53,
+      "GBP": 129.65,
+      "AUD": 68.88,
+      "EUR": 112.48
     },
     "idfc": {
-      "USD": 95.96,
-      "EUR": 112.55,
-      "GBP": 129.6,
-      "AUD": 68.72,
-      "CAD": 70.43
+      "USD": 95.95,
+      "EUR": 113.57,
+      "GBP": 130.67,
+      "AUD": 69.44,
+      "CAD": 70.99
     },
     "canara": {
       "USD": 94.6525,
@@ -66,24 +59,31 @@
       "USD": 94.46
     },
     "thomascook": {
-      "USD": 95.1401,
-      "EUR": 111.2354,
-      "GBP": 128.2296,
-      "CAD": 69.6245,
-      "AUD": 68.0274
+      "USD": 95.3845,
+      "EUR": 111.8469,
+      "GBP": 129.0719,
+      "CAD": 70.0369,
+      "AUD": 68.593
+    },
+    "orient": {
+      "USD": 94.62,
+      "EUR": 110.98,
+      "GBP": 128.1,
+      "CAD": 69.33,
+      "AUD": 67.79
     }
   },
   "errors": [
     {
-      "id": "orient",
-      "error": "page.goto: net::ERR_NETWORK_IO_SUSPENDED at https://www.orientexchange.in/\nCall log:\n\u001b[2m  - navigat"
+      "id": "icici",
+      "error": "page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://www.icici.bank.in/corp"
     }
   ],
   "midmarket": {
-    "USD": 94.299,
-    "CAD": 68.876,
-    "GBP": 127.098,
-    "EUR": 110.252,
-    "AUD": 67.249
+    "USD": 94.251,
+    "CAD": 68.838,
+    "GBP": 127.325,
+    "EUR": 110.466,
+    "AUD": 67.386
   }
 }
