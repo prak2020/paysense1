@@ -1,7 +1,14 @@
 {
-  "updated": "2026-05-01T02:07:04.591Z",
-  "updated_ist": "1/5/2026, 7:37:04 am",
+  "updated": "2026-05-01T02:22:56.432Z",
+  "updated_ist": "1/5/2026, 7:52:56 am",
   "rates": {
+    "icici": {
+      "USD": 97.01,
+      "EUR": 114.05,
+      "GBP": 131.27,
+      "AUD": 70.19,
+      "CAD": 71.98
+    },
     "hdfc": {
       "AUD": 70.25,
       "CAD": 71.51,
@@ -67,21 +74,16 @@
     "orient": {
       "USD": 95.3,
       "EUR": 111.91,
-      "GBP": 129.71,
+      "GBP": 129.72,
       "CAD": 70.31,
       "AUD": 68.75
     }
   },
-  "errors": [
-    {
-      "id": "icici",
-      "error": "page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://www.icici.bank.in/corp"
-    }
-  ],
+  "errors": [],
   "midmarket": {
-    "USD": 94.844,
+    "USD": 94.842,
     "CAD": 69.869,
-    "GBP": 129.049,
+    "GBP": 129.068,
     "EUR": 111.346,
     "AUD": 68.327
   }
